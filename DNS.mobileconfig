@@ -34,6 +34,39 @@
                     <string>guzzoni-apple-com.v.aapling.com</string>
                     <string>crl3.apple.com</string>
                     <string>crl2.apple.com</string>
+                    <string>audio-ads.spotify.com</string>
+                    <string>adclick.g.doubleclick.net</string>
+                    <string>pubads.g.doubleclick.net</string>
+                    <string>spclient.wg.spotify.com</string>
+                    <string>heads-ec.spotify.com</string>
+                    <string>ads-fa.spotify.com</string>
+                    <string>adeventtracker.spotify.com</string>
+                    <string>pagead46.l.doubleclick.net</string>
+                    <string>securepubads.g.doubleclick.net</string>
+                    <string>googleads.g.doubleclick.net</string>
+                    <string>www.googletagservices.com</string>
+                    <string>www.googleadservices.com</string>
+                    <string>tpc.googlesyndication.com</string>
+                    <string>pagead2.googlesyndication.com</string>
+                    <string>stats.g.doubleclick.net</string>
+                    <string>ads.g.doubleclick.net</string>
+                    <string>googlesyndication.com</string>
+                    <string>s0.2mdn.net</string>
+                    <string>static.doubleclick.net</string>
+                    <string>crashlytics.com</string>
+                    <string>metrics.spotify.com</string>
+                    <string>log.spotify.com</string>
+                    <string>google-analytics.com</string>
+                    <string>ssl.google-analytics.com</string>
+                    <string>analytics.google.com</string>
+                    <string>ads.yahoo.com</string>
+                    <string>ads-twitter.com</string>
+                    <string>ads.linkedin.com</string>
+                    <string>ads.facebook.com</string>
+                    <string>secure.adnxs.com</string>
+                    <string>ib.adnxs.com</string>
+                    <string>adservice.google.com</string>
+                    <string>adservice.google.co</string>
                     <string>crl.digicert.com</string>
                     <string>crl2.digicert.com</string>
                     <string>crl5.digicert.com</string>
