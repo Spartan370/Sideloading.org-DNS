@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-touch-fullscreen" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#000000">
+<title>AdAway</title>
+<style>
+/* ═══════════════════════════════════════════════════════
+   ADAWAY v2.0 — DESIGN TOKENS
+═══════════════════════════════════════════════════════ */
+:root {
+  --green:   #30d158;
+  --green-g: rgba(48,209,88,.28);
+  --red:     #ff453a;
+  --blue:    #0a84ff;
+  --yellow:  #ffd60a;
+  --orange:  #ff6b00;
+  --purple:  #bf5af2;
+  --sc:      #ff5500;        /* SoundCloud orange */
+  --sc-g:    rgba(255,85,0,.22);
+  --sc-dim:  rgba(255,85,0,.08);
+
+  --bg0: #000000;
+  --bg1: #0a0a0a;
+  --bg2: #1c1c1e;
+  --bg3: #2c2c2e;
+  --bg4: #3a3a3c;
+  --l1:  #ffffff;
+  --l2:  rgba(235,235,245,.60);
+  --l3:  rgba(235,235,245,.28);
+  --sep: rgba(84,84,88,.55);
+
+  --r8:  8px;
+  --r12: 12px;
+  --r16: 16px;
+  --r20: 20px;
+
+  --st:  env(safe-area-inset-top, 0px);
+  --sb:  env(safe-area-inset-bottom, 34px);
+  --sl:  env(safe-area-inset-left, 0px);
+  --sr:  env(safe-area-inset-right, 0px);
+
+  --font: -apple-system, "SF Pro Text", "SF Pro Display", BlinkMacSystemFont, sans-serif;
+  --mono: "SF Mono", ui-monospace, "Courier New", monospace;
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  background: var(--bg0);
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100%;
+  background: var(--bg0);
+  color: var(--l1);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TAB BAR (bottom nav)
+═══════════════════════════════════════════════════════ */
+#tab-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 200;
+  height: calc(49px + var(--sb));
+  padding-bottom: var(--sb);
+  background: rgba(10,10,10,.92);
+  backdrop-filter: saturate(200%) blur(28px);
+  -webkit-backdrop-filter: saturate(200%) blur(28px);
+  border-top: .5px solid var(--sep);
+  display: flex;
+  align-items: flex-start;
+  padding-top: 6px;
+}
+.tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  padding: 0 4px;
+  transition: opacity .15s;
+}
+.tab:active { opacity: .6; }
+.tab-icon {
+  font-size: 22px;
+  line-height: 1;
+  filter: grayscale(1) brightness(.55);
+  transition: filter .2s, transform .2s;
+}
+.tab.active .tab-icon {
+  filter: none;
+  transform: scale(1.05);
+}
+.tab-lbl {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .2px;
+  color: var(--l3);
+  transition: color .2s;
+}
+.tab.active .tab-lbl { color: var(--l1); }
+/* coloured active states per tab */
+#tab-home.active .tab-icon  { filter: drop-shadow(0 0 6px var(--green)); }
+#tab-sc.active   .tab-icon  { filter: drop-shadow(0 0 6px var(--sc)); }
+#tab-dns.active  .tab-icon  { filter: drop-shadow(0 0 6px var(--blue)); }
+#tab-log.active  .tab-icon  { filter: drop-shadow(0 0 6px var(--yellow)); }
+
+/* ═══════════════════════════════════════════════════════
+   NAV BAR (top)
+═══════════════════════════════════════════════════════ */
+#nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  height: calc(var(--st) + 52px);
+  padding-top: var(--st);
+  background: rgba(0,0,0,.85);
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  border-bottom: .5px solid var(--sep);
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 10px;
+  padding-left: calc(18px + var(--sl));
+  padding-right: calc(18px + var(--sr));
+  justify-content: space-between;
+}
+.nav-title {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -.35px;
+}
+#nav-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: var(--green);
+  color: #000;
+  letter-spacing: .3px;
+  transition: background .4s, color .4s;
+}
+#nav-badge.sc { background: var(--sc); color: #fff; }
+#nav-badge.blue { background: var(--blue); color: #fff; }
+#nav-badge.yellow { background: var(--yellow); color: #000; }
+
+/* ═══════════════════════════════════════════════════════
+   PAGES
+═══════════════════════════════════════════════════════ */
+.page {
+  display: none;
+  padding: calc(var(--st) + 60px) calc(16px + var(--sl)) calc(49px + var(--sb) + 20px) calc(16px + var(--sr));
+  max-width: 430px;
+  margin: 0 auto;
+  animation: pageIn .28s ease both;
+}
+.page.active { display: block; }
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION LABEL
+═══════════════════════════════════════════════════════ */
+.slbl {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--l2);
+  text-transform: uppercase;
+  letter-spacing: .55px;
+  margin: 26px 0 6px 4px;
+}
+.slbl:first-child { margin-top: 6px; }
+
+/* ═══════════════════════════════════════════════════════
+   HERO CARD
+═══════════════════════════════════════════════════════ */
+.hero {
+  position: relative;
+  background: var(--bg2);
+  border-radius: var(--r20);
+  padding: 20px 18px 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 28px rgba(0,0,0,.55), 0 1px 0 rgba(255,255,255,.05) inset;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -55px; right: -55px;
+  width: 170px; height: 170px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--hero-glow, var(--green-g)) 0%, transparent 70%);
+  pointer-events: none;
+  transition: background 0.6s;
+}
+.hero.sc-hero::before { --hero-glow: var(--sc-g); }
+
+.hero-row { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.hero-icon {
+  width: 50px; height: 50px;
+  border-radius: 13px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,.4);
+}
+.hero-icon.green-icon { background: linear-gradient(145deg,#1a3a1a,#0d200d); box-shadow: 0 0 0 1px rgba(48,209,88,.2), 0 4px 12px rgba(0,0,0,.4); }
+.hero-icon.sc-icon    { background: linear-gradient(145deg,#2a1200,#1a0a00); box-shadow: 0 0 0 1px rgba(255,85,0,.25), 0 4px 12px rgba(0,0,0,.4); }
+.hero-name { font-size: 19px; font-weight: 700; letter-spacing: -.45px; line-height: 1.1; }
+.hero-sub  { font-size: 12.5px; color: var(--l2); margin-top: 3px; }
+
+/* status pill */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 600;
+  transition: all .3s;
+}
+.pill.on  { background: rgba(48,209,88,.14); color: var(--green); border: 1px solid rgba(48,209,88,.28); }
+.pill.sc  { background: rgba(255,85,0,.12);  color: var(--sc);    border: 1px solid rgba(255,85,0,.28); }
+.pill.off { background: rgba(255,69,58,.10); color: var(--red);   border: 1px solid rgba(255,69,58,.22); }
+.pdot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 5px currentColor;
+  animation: pdot 2.2s ease-in-out infinite;
+}
+@keyframes pdot {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:.5; transform:scale(.78); }
+}
+
+/* ═══════════════════════════════════════════════════════
+   STATS GRID
+═══════════════════════════════════════════════════════ */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 9px;
+  margin-top: 14px;
+}
+.stat {
+  background: rgba(255,255,255,.04);
+  border-radius: var(--r12);
+  padding: 10px 6px;
+  text-align: center;
+  border: .5px solid rgba(255,255,255,.055);
+}
+.sv {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -.5px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.sv.g { color: var(--green); }
+.sv.b { color: var(--blue);  }
+.sv.o { color: var(--sc);    }
+.sv.r { color: var(--red);   }
+.sl { font-size: 9.5px; color: var(--l3); text-transform: uppercase; letter-spacing: .4px; margin-top: 3px; font-weight: 500; }
+
+/* wide stat (2 col) */
+.stats-4 { grid-template-columns: repeat(2,1fr); }
+.stats-4 .stat-wide { grid-column: span 2; }
+
+/* ═══════════════════════════════════════════════════════
+   PROGRESS BAR
+═══════════════════════════════════════════════════════ */
+.pbar-wrap {
+  background: var(--bg2);
+  border-radius: var(--r16);
+  padding: 13px 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.32);
+}
+.pbar-head { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.pbar-lbl  { font-size: 13px; color: var(--l2); font-weight: 500; }
+.pbar-pct  { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.pbar-pct.g { color: var(--green); }
+.pbar-pct.o { color: var(--sc); }
+.pbar-track { height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+.pbar-fill  {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, var(--fill-a, var(--green)), var(--fill-b, #34d399));
+  transition: width 1.6s cubic-bezier(.4,0,.2,1);
+  width: 0%;
+}
+.pbar-fill.sc { --fill-a: var(--sc); --fill-b: #ff8c55; }
+
+/* ═══════════════════════════════════════════════════════
+   GROUPED LIST
+═══════════════════════════════════════════════════════ */
+.grp {
+  background: var(--bg2);
+  border-radius: var(--r16);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,.32), 0 1px 0 rgba(255,255,255,.04) inset;
+}
+.row {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  gap: 13px;
+  background: var(--bg2);
+  border-bottom: .5px solid var(--sep);
+  min-height: 52px;
+  transition: background .12s;
+}
+.row:last-child { border-bottom: none; }
+.row:active { background: var(--bg3); }
+
+.ri {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.rb { flex: 1; min-width: 0; }
+.rt { font-size: 15.5px; font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rs { font-size: 12px; color: var(--l2); margin-top: 1.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rr { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+.rv { font-size: 14px; color: var(--l2); }
+
+/* ═══════════════════════════════════════════════════════
+   TOGGLE SWITCH
+═══════════════════════════════════════════════════════ */
+.sw { position: relative; width: 51px; height: 31px; flex-shrink: 0; }
+.sw input { opacity: 0; width: 0; height: 0; position: absolute; }
+.tk {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 31px;
+  background: var(--bg4);
+  transition: background .22s, box-shadow .22s;
+  cursor: pointer;
+}
+.tk::before {
+  content: '';
+  position: absolute;
+  width: 27px; height: 27px;
+  left: 2px; top: 2px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,.28);
+  transition: transform .22s cubic-bezier(.4,0,.2,1);
+}
+.sw input:checked + .tk              { background: var(--green); box-shadow: 0 0 10px var(--green-g); }
+.sw input:checked + .tk::before      { transform: translateX(20px); }
+.sw.sc-sw input:checked + .tk       { background: var(--sc); box-shadow: 0 0 10px var(--sc-g); }
+
+/* ═══════════════════════════════════════════════════════
+   INFO TABLE
+═══════════════════════════════════════════════════════ */
+.info-card {
+  background: var(--bg2);
+  border-radius: var(--r16);
+  padding: 14px 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.32);
+}
+.irow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 5.5px 0;
+  border-bottom: .5px solid var(--sep);
+  gap: 10px;
+}
+.irow:last-child { border-bottom: none; padding-bottom: 0; }
+.ik { font-size: 13px; color: var(--l2); flex-shrink: 0; }
+.iv { font-size: 13px; text-align: right; font-family: var(--mono); word-break: break-all; }
+.iv.g { color: var(--green); font-family: var(--font); font-weight: 600; }
+.iv.o { color: var(--sc);    font-family: var(--font); font-weight: 600; }
+
+/* ═══════════════════════════════════════════════════════
+   SOUNDCLOUD WAVEFORM VISUALISER
+═══════════════════════════════════════════════════════ */
+#sc-viz-wrap {
+  background: var(--bg2);
+  border-radius: var(--r16);
+  padding: 16px 15px 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.32), 0 0 0 1px rgba(255,85,0,.1);
+  position: relative;
+  overflow: hidden;
+}
+#sc-viz-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at top right, rgba(255,85,0,.07) 0%, transparent 65%);
+  pointer-events: none;
+}
+#sc-viz-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sc);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+#sc-viz-title span { color: var(--l2); font-weight: 400; font-size: 12px; }
+#waveform {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 48px;
+}
+.wbar {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+  background: var(--bg4);
+  transition: background .3s, height .4s cubic-bezier(.4,0,.2,1);
+  min-height: 4px;
+}
+.wbar.blocked { background: var(--sc); }
+.wbar.passing { background: rgba(255,85,0,.25); }
+
+#sc-now-blocking {
+  font-size: 11px;
+  color: var(--l3);
+  font-family: var(--mono);
+  margin-top: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#sc-now-blocking .domain { color: var(--sc); }
+
+/* ═══════════════════════════════════════════════════════
+   SC BLOCK FEED (scrolling ticker)
+═══════════════════════════════════════════════════════ */
+#sc-feed-wrap {
+  background: var(--bg2);
+  border-radius: var(--r16);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,.32);
+}
+#sc-feed-bar {
+  background: rgba(255,85,0,.12);
+  border-bottom: .5px solid rgba(255,85,0,.18);
+  padding: 9px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#sc-feed-bar .sc-logo { font-size: 14px; }
+#sc-feed-bar .sc-title { font-size: 12.5px; font-weight: 600; color: var(--sc); flex: 1; }
+#sc-feed-bar .sc-count {
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--sc);
+  color: #fff;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-variant-numeric: tabular-nums;
+}
+#sc-feed {
+  max-height: 200px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+#sc-feed::-webkit-scrollbar { width: 2px; }
+#sc-feed::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 1px; }
+
+.sc-feed-row {
+  display: flex;
+  align-items: center;
+  padding: 9px 14px;
+  border-bottom: .5px solid var(--sep);
+  gap: 10px;
+  animation: feedIn .25s ease both;
+}
+.sc-feed-row:last-child { border-bottom: none; }
+@keyframes feedIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.sc-feed-tag {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 5px;
+  flex-shrink: 0;
+  letter-spacing: .3px;
+}
+.sc-feed-tag.blk { background: rgba(255,69,58,.15); color: var(--red); }
+.sc-feed-tag.trk { background: rgba(255,159,10,.12); color: var(--orange); }
+.sc-feed-tag.pmt { background: rgba(255,85,0,.15); color: var(--sc); }
+.sc-feed-tag.ana { background: rgba(10,132,255,.12); color: var(--blue); }
+.sc-feed-domain { font-size: 12.5px; font-family: var(--mono); color: var(--l1); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sc-feed-time { font-size: 10.5px; color: var(--l3); font-variant-numeric: tabular-nums; }
+
+/* ═══════════════════════════════════════════════════════
+   TERMINAL LOG
+═══════════════════════════════════════════════════════ */
+#terminal {
+  background: #050505;
+  border-radius: var(--r16);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,.6), 0 0 0 1px rgba(48,209,88,.1);
+}
+#tbar {
+  background: var(--bg2);
+  padding: 9px 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border-bottom: .5px solid var(--sep);
+}
+.td { width: 10px; height: 10px; border-radius: 50%; }
+#tbar-label { font-size: 11.5px; color: var(--l2); margin-left: 4px; font-weight: 500; letter-spacing: .15px; }
+#lbox {
+  height: 240px;
+  overflow-y: auto;
+  padding: 11px 14px;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.7;
+  -webkit-overflow-scrolling: touch;
+}
+#lbox::-webkit-scrollbar { width: 3px; }
+#lbox::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 2px; }
+.ll { display: block; }
+.lt  { color: var(--l3); }
+.lsy { color: #555; }
+.lbl { color: var(--red); }
+.lok { color: var(--green); }
+.lwn { color: var(--yellow); }
+.lin { color: var(--blue); }
+.lsc { color: var(--sc); }
+
+/* ═══════════════════════════════════════════════════════
+   BUTTON
+═══════════════════════════════════════════════════════ */
+.btn {
+  display: block;
+  width: 100%;
+  padding: 13px;
+  border-radius: var(--r12);
+  font-size: 15px;
+  font-weight: 500;
+  font-family: var(--font);
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .12s;
+}
+.btn:active { opacity: .72; }
+.btn-red { background: rgba(255,69,58,.1); color: var(--red); border: 1px solid rgba(255,69,58,.2); margin-top: 10px; }
+.btn-sc  { background: rgba(255,85,0,.1);  color: var(--sc);  border: 1px solid rgba(255,85,0,.22); margin-top: 10px; }
+
+/* ═══════════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════════ */
+#toast {
+  position: fixed;
+  bottom: calc(49px + var(--sb) + 14px);
+  left: 50%;
+  transform: translateX(-50%) translateY(60px);
+  background: rgba(28,28,30,.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--l1);
+  padding: 10px 18px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0,0,0,.5), 0 0 0 .5px rgba(255,255,255,.09);
+  transition: transform .32s cubic-bezier(.34,1.56,.64,1), opacity .32s;
+  opacity: 0;
+  z-index: 999;
+  pointer-events: none;
+}
+#toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* ═══════════════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════════════ */
+.foot {
+  text-align: center;
+  margin-top: 28px;
+}
+.foot p { font-size: 11.5px; color: var(--l3); line-height: 1.7; }
+.foot .ver { color: var(--l2); font-weight: 600; }
+
+/* ═══════════════════════════════════════════════════════
+   SC PAGE — CATEGORY BADGES
+═══════════════════════════════════════════════════════ */
+.sc-badge-row {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.sc-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1px solid;
+  letter-spacing: .2px;
+}
+.sc-badge.on  { background: rgba(255,85,0,.12); color: var(--sc); border-color: rgba(255,85,0,.28); }
+.sc-badge.off { background: rgba(255,255,255,.04); color: var(--l3); border-color: rgba(255,255,255,.08); }
+
+/* ═══════════════════════════════════════════════════════
+   STAGGER ANIMATIONS
+═══════════════════════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.fu { animation: fadeUp .38s ease both; }
+.d0 { animation-delay: .00s; }
+.d1 { animation-delay: .05s; }
+.d2 { animation-delay: .10s; }
+.d3 { animation-delay: .15s; }
+.d4 { animation-delay: .20s; }
+.d5 { animation-delay: .25s; }
+.d6 { animation-delay: .30s; }
+.d7 { animation-delay: .35s; }
+.d8 { animation-delay: .40s; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     NAV BAR
+══════════════════════════════════════ -->
+<nav id="nav">
+  <span class="nav-title" id="nav-title">AdAway</span>
+  <span id="nav-badge">ACTIVE</span>
+</nav>
+
+<!-- ══════════════════════════════════════
+     PAGE: HOME
+══════════════════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <!-- Hero -->
+  <div class="hero fu d0">
+    <div class="hero-row">
+      <div class="hero-icon green-icon">🛡️</div>
+      <div>
+        <div class="hero-name">AdAway</div>
+        <div class="hero-sub">DNS-over-HTTPS · AdGuard DNS</div>
+      </div>
+    </div>
+    <div class="pill on"><div class="pdot"></div><span id="home-status-txt">Protection Active</span></div>
+    <div class="stats" id="home-stats">
+      <div class="stat"><div class="sv g" id="h-blocked">0</div><div class="sl">Blocked</div></div>
+      <div class="stat"><div class="sv b">508</div><div class="sl">Rules</div></div>
+      <div class="stat"><div class="sv" id="h-uptime">0s</div><div class="sl">Uptime</div></div>
+    </div>
+  </div>
+
+  <!-- Block rate -->
+  <div class="slbl fu d1">Block Rate</div>
+  <div class="pbar-wrap fu d1">
+    <div class="pbar-head">
+      <span class="pbar-lbl">All Requests</span>
+      <span class="pbar-pct g" id="h-pct">0%</span>
+    </div>
+    <div class="pbar-track"><div class="pbar-fill" id="h-fill"></div></div>
+  </div>
+
+  <!-- Filter categories -->
+  <div class="slbl fu d2">Filter Categories</div>
+  <div class="grp fu d2">
+    <div class="row">
+      <div class="ri" style="background:rgba(255,69,58,.1)">🎯</div>
+      <div class="rb"><div class="rt">Display Ads</div><div class="rs">Google, Amazon, Meta, DoubleClick</div></div>
+      <div class="rr"><label class="sw"><input type="checkbox" checked onchange="tog(this,'Display Ads')"><span class="tk"></span></label></div>
+    </div>
+    <div class="row">
+      <div class="ri" style="background:rgba(255,159,10,.1)">📊</div>
+      <div class="rb"><div class="rt">Analytics & Tracking</div><div class="rs">Mixpanel, Amplitude, Segment, Heap</div></div>
+      <div class="rr"><label class="sw"><input type="checkbox" checked onchange="tog(this,'Analytics')"><span class="tk"></span></label></div>
+    </div>
+    <div class="row">
+      <div class="ri" style="background:rgba(10,132,255,.1)">🎬</div>
+      <div class="rb"><div class="rt">Video Ads</div><div class="rs">YouTube, Vungle, Chartboost, IronSource</div></div>
+      <div class="rr"><label class="sw"><input type="checkbox" checked onchange="tog(this,'Video Ads')"><span class="tk"></span></label></div>
+    </div>
+    <div class="row">
+      <div class="ri" style="background:rgba(255,85,0,.1)">🟠</div>
+      <div class="rb"><div class="rt">SoundCloud Suite</div><div class="rs">Ads, promoted tracks, analytics, beacons</div></div>
+      <div class="rr"><label class="sw sc-sw"><input type="checkbox" checked onchange="tog(this,'SoundCloud Suite')"><span class="tk"></span></label></div>
+    </div>
+    <div class="row">
+      <div class="ri" style="background:rgba(48,209,88,.1)">📱</div>
+      <div class="rb"><div class="rt">Mobile SDKs</div><div class="rs">AppsFlyer, Adjust, Branch, Kochava</div></div>
+      <div class="rr"><label class="sw"><input type="checkbox" checked onchange="tog(this,'Mobile SDKs')"><span class="tk"></span></label></div>
+    </div>
+    <div class="row">
+      <div class="ri" style="background:rgba(191,90,242,.1)">🔗</div>
+      <div class="rb"><div class="rt">Popups & Redirects</div><div class="rs">PopAds, PropellerAds, ExoClick</div></div>
+      <div class="rr"><label class="sw"><input type="checkbox" checked onchange="tog(this,'Popups')"><span class="tk"></span></label></div>
+    </div>
+    <div class="row">
+      <div class="ri" style="background:rgba(255,69,58,.1)">🕵️</div>
+      <div class="rb"><div class="rt">Session Replay</div><div class="rs">Hotjar, FullStory, LogRocket, Mouseflow</div></div>
+      <div class="rr"><label class="sw"><input type="checkbox" checked onchange="tog(this,'Session Replay')"><span class="tk"></span></label></div>
+    </div>
+    <div class="row">
+      <div class="ri" style="background:rgba(10,132,255,.1)">📢</div>
+      <div class="rb"><div class="rt">Push Notifications</div><div class="rs">OneSignal, Urban Airship, Pusher</div></div>
+      <div class="rr"><label class="sw"><input type="checkbox" checked onchange="tog(this,'Push')"><span class="tk"></span></label></div>
+    </div>
+  </div>
+
+  <div class="foot fu d8">
+    <p><span class="ver">AdAway v2.0</span> · DNS-over-HTTPS · 508 rules</p>
+    <p>Host this file at an https:// URL for full-screen mode</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: SOUNDCLOUD
+══════════════════════════════════════ -->
+<div class="page" id="page-sc">
+
+  <!-- SC Hero -->
+  <div class="hero sc-hero fu d0">
+    <div class="hero-row">
+      <div class="hero-icon sc-icon">🔊</div>
+      <div>
+        <div class="hero-name">SoundCloud Shield</div>
+        <div class="hero-sub">Real-time ad &amp; tracker elimination</div>
+      </div>
+    </div>
+    <div class="pill sc"><div class="pdot"></div><span>Fully Protected</span></div>
+    <div class="stats" style="grid-template-columns:repeat(4,1fr);margin-top:14px;">
+      <div class="stat"><div class="sv o" id="sc-ads">0</div><div class="sl">Ads</div></div>
+      <div class="stat"><div class="sv r" id="sc-trk">0</div><div class="sl">Trackers</div></div>
+      <div class="stat"><div class="sv b" id="sc-prm">0</div><div class="sl">Promoted</div></div>
+      <div class="stat"><div class="sv g" id="sc-anl">0</div><div class="sl">Analytics</div></div>
+    </div>
+  </div>
+
+  <!-- Live waveform -->
+  <div class="slbl fu d1">Live Request Waveform</div>
+  <div id="sc-viz-wrap" class="fu d1">
+    <div id="sc-viz-title">🎵 SoundCloud Filter <span id="sc-viz-rate">— 0 blocks/min</span></div>
+    <div id="waveform"></div>
+    <div id="sc-now-blocking">Monitoring…</div>
+  </div>
+
+  <!-- SC block rate -->
+  <div class="slbl fu d2">SoundCloud Block Rate</div>
+  <div class="pbar-wrap fu d2">
+    <div class="pbar-head">
+      <span class="pbar-lbl">SC Ad Requests Stopped</span>
+      <span class="pbar-pct o" id="sc-pct">0%</span>
+    </div>
+    <div class="pbar-track"><div class="pbar-fill sc" id="sc-fill"></div></div>
+  </div>
+
+  <!-- SC live feed -->
+  <div class="slbl fu d3">Live Block Feed</div>
+  <div id="sc-feed-wrap" class="fu d3">
+    <div id="sc-feed-bar">
+      <span class="sc-logo">🟠</span>
+      <span class="sc-title">SoundCloud Requests</span>
+      <span class="sc-count" id="sc-feed-count">0</span>
+    </div>
+    <div id="sc-feed"></div>
+  </div>
+
+  <!-- SC domains blocked -->
+  <div class="slbl fu d4">Blocked Domains (SoundCloud)</div>
+  <div class="info-card fu d4">
+    <div class="irow"><span class="ik">ad.soundcloud.com</span><span class="iv o">Ads</span></div>
+    <div class="irow"><span class="ik">ads.soundcloud.com</span><span class="iv o">Ads</span></div>
+    <div class="irow"><span class="ik">promoted.soundcloud.com</span><span class="iv o">Promoted</span></div>
+    <div class="irow"><span class="ik">api-promoted.soundcloud.com</span><span class="iv o">Promoted</span></div>
+    <div class="irow"><span class="ik">smetrics.soundcloud.com</span><span class="iv" style="color:var(--blue)">Analytics</span></div>
+    <div class="irow"><span class="ik">analytics.soundcloud.com</span><span class="iv" style="color:var(--blue)">Analytics</span></div>
+    <div class="irow"><span class="ik">eventlogger.soundcloud.com</span><span class="iv" style="color:var(--yellow)">Beacon</span></div>
+    <div class="irow"><span class="ik">moatads.com</span><span class="iv o">Viewability</span></div>
+    <div class="irow"><span class="ik">scorecardresearch.com</span><span class="iv" style="color:var(--blue)">Audience</span></div>
+    <div class="irow"><span class="ik">pixel.quantserve.com</span><span class="iv" style="color:var(--blue)">Pixel</span></div>
+    <div class="irow"><span class="ik">criteo.com</span><span class="iv o">Retargeting</span></div>
+    <div class="irow"><span class="ik">googleads.g.doubleclick.net</span><span class="iv o">Ads</span></div>
+    <div class="irow"><span class="ik">adservice.google.com</span><span class="iv o">Ads</span></div>
+    <div class="irow"><span class="ik">pagead2.googlesyndication.com</span><span class="iv o">Ads</span></div>
+    <div class="irow"><span class="ik">trc.taboola.com</span><span class="iv" style="color:var(--purple)">Native Ads</span></div>
+    <div class="irow"><span class="ik">data.flurry.com</span><span class="iv" style="color:var(--blue)">Analytics</span></div>
+    <div class="irow"><span class="ik">api.amplitude.com</span><span class="iv" style="color:var(--blue)">Analytics</span></div>
+    <div class="irow"><span class="ik">api.segment.io</span><span class="iv" style="color:var(--blue)">Analytics</span></div>
+  </div>
+
+  <!-- SC fine-grained controls -->
+  <div class="slbl fu d5">Fine-Grained Controls</div>
+  <div class="grp fu d5">
+    <div class="row">
+      <div class="ri" style="background:rgba(255,85,0,.1)">🔇</div>
+      <div class="rb"><div class="rt">Audio Ads</div><div class="rs">Pre-roll &amp; mid-roll audio insertions</div></div>
+      <div class="rr"><label class="sw sc-sw"><input type="checkbox" checked onchange="scTog(this,'Audio Ads')"><span class="tk"></span></label></div>
+    </div>
+    <div class="row">
+      <div class="ri" style="background:rgba(255,85,0,.1)">📺</div>
+      <div class="rb"><div class="rt">Display Banners</div><div class="rs">Visual ad overlays on tracks</div></div>
+      <div class="rr"><label class="sw sc-sw"><input type="checkbox" checked onchange="scTog(this,'Banners')"><span class="tk"></span></label></div>
+    </div>
+    <div class="row">
+      <div class="ri" style="background:rgba(255,85,0,.1)">⭐</div>
+      <div class="rb"><div class="rt">Promoted Tracks</div><div class="rs">Paid placements in feed &amp; stream</div></div>
+      <div class="rr"><label class="sw sc-sw"><input type="checkbox" checked onchange="scTog(this,'Promoted Tracks')"><span class="tk"></span></label></div>
+    </div>
+    <div class="row">
+      <div class="ri" style="background:rgba(10,132,255,.1)">👁️</div>
+      <div class="rb"><div class="rt">Viewability Pixels</div><div class="rs">Moat, IAS, DoubleVerify</div></div>
+      <div class="rr"><label class="sw sc-sw"><input type="checkbox" checked onchange="scTog(this,'Viewability')"><span class="tk"></span></label></div>
+    </div>
+    <div class="row">
+      <div class="ri" style="background:rgba(255,214,10,.1)">📡</div>
+      <div class="rb"><div class="rt">Beacon Pings</div><div class="rs">eventlogger, smetrics heartbeats</div></div>
+      <div class="rr"><label class="sw sc-sw"><input type="checkbox" checked onchange="scTog(this,'Beacons')"><span class="tk"></span></label></div>
+    </div>
+    <div class="row">
+      <div class="ri" style="background:rgba(10,132,255,.1)">📈</div>
+      <div class="rb"><div class="rt">Analytics Calls</div><div class="rs">Amplitude, Segment, Flurry</div></div>
+      <div class="rr"><label class="sw sc-sw"><input type="checkbox" checked onchange="scTog(this,'SC Analytics')"><span class="tk"></span></label></div>
+    </div>
+    <div class="row">
+      <div class="ri" style="background:rgba(191,90,242,.1)">🔄</div>
+      <div class="rb"><div class="rt">Retargeting</div><div class="rs">Criteo, Taboola, DoubleClick</div></div>
+      <div class="rr"><label class="sw sc-sw"><input type="checkbox" checked onchange="scTog(this,'Retargeting')"><span class="tk"></span></label></div>
+    </div>
+    <div class="row">
+      <div class="ri" style="background:rgba(255,159,10,.1)">🎯</div>
+      <div class="rb"><div class="rt">Audience Targeting</div><div class="rs">Quantserve, Scorecard, Comscore</div></div>
+      <div class="rr"><label class="sw sc-sw"><input type="checkbox" checked onchange="scTog(this,'Audience')"><span class="tk"></span></label></div>
+    </div>
+  </div>
+
+  <button class="btn btn-sc fu d7" onclick="resetSC()">Reset SoundCloud Stats</button>
+
+  <div class="foot fu d8" style="margin-top:20px;">
+    <p>SoundCloud ad domains fully blocked via DNS · No audio ads · No promoted tracks</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: DNS
+══════════════════════════════════════ -->
+<div class="page" id="page-dns">
+
+  <div class="slbl fu d0">DNS Server</div>
+  <div class="info-card fu d0">
+    <div class="irow"><span class="ik">Protocol</span><span class="iv g">DNS-over-HTTPS</span></div>
+    <div class="irow"><span class="ik">Provider</span><span class="iv">AdGuard DNS</span></div>
+    <div class="irow"><span class="ik">Endpoint</span><span class="iv">dns.adguard-dns.com</span></div>
+    <div class="irow"><span class="ik">Full URL</span><span class="iv">/dns-query</span></div>
+    <div class="irow"><span class="ik">Encryption</span><span class="iv g">TLS 1.3</span></div>
+    <div class="irow"><span class="ik">DNSSEC</span><span class="iv g">Validated</span></div>
+  </div>
+
+  <div class="slbl fu d1">IPv4 Addresses</div>
+  <div class="info-card fu d1">
+    <div class="irow"><span class="ik">Primary</span><span class="iv">94.140.14.14</span></div>
+    <div class="irow"><span class="ik">Secondary</span><span class="iv">94.140.15.15</span></div>
+  </div>
+
+  <div class="slbl fu d2">IPv6 Addresses</div>
+  <div class="info-card fu d2">
+    <div class="irow"><span class="ik">Primary</span><span class="iv">2a10:50c0::ad1:ff</span></div>
+    <div class="irow"><span class="ik">Secondary</span><span class="iv">2a10:50c0::ad2:ff</span></div>
+  </div>
+
+  <div class="slbl fu d3">On-Demand Rules</div>
+  <div class="grp fu d3">
+    <div class="row">
+      <div class="ri" style="background:rgba(255,69,58,.1)">🚫</div>
+      <div class="rb"><div class="rt">NeverConnect</div><div class="rs">508 ad &amp; tracker domains</div></div>
+      <div class="rr"><span class="rv" style="color:var(--red);font-weight:600;font-size:13px">508</span></div>
+    </div>
+    <div class="row">
+      <div class="ri" style="background:rgba(48,209,88,.1)">✅</div>
+      <div class="rb"><div class="rt">Connect</div><div class="rs">All other traffic via DoH</div></div>
+      <div class="rr"><span class="rv" style="color:var(--green);font-weight:600;font-size:13px">DEFAULT</span></div>
+    </div>
+  </div>
+
+  <div class="slbl fu d4">Profile Metadata</div>
+  <div class="info-card fu d4">
+    <div class="irow"><span class="ik">Display Name</span><span class="iv g">AdAway</span></div>
+    <div class="irow"><span class="ik">Identifier</span><span class="iv">com.adaway.profile</span></div>
+    <div class="irow"><span class="ik">Version</span><span class="iv">2.0 · Build 2025.1</span></div>
+    <div class="irow"><span class="ik">Organization</span><span class="iv">AdAway</span></div>
+    <div class="irow"><span class="ik">Removable</span><span class="iv g">Yes</span></div>
+    <div class="irow"><span class="ik">Total Rules</span><span class="iv g">508</span></div>
+  </div>
+
+  <div class="slbl fu d5">Resolution Stats</div>
+  <div class="pbar-wrap fu d5">
+    <div class="pbar-head"><span class="pbar-lbl">Overall Block Rate</span><span class="pbar-pct g" id="dns-pct">0%</span></div>
+    <div class="pbar-track"><div class="pbar-fill" id="dns-fill"></div></div>
+  </div>
+
+  <div class="stats fu d6" style="margin-top:10px;">
+    <div class="stat"><div class="sv g" id="dns-blocked">0</div><div class="sl">Blocked</div></div>
+    <div class="stat"><div class="sv b" id="dns-allowed">0</div><div class="sl">Allowed</div></div>
+    <div class="stat"><div class="sv" id="dns-latency">—</div><div class="sl">ms avg</div></div>
+  </div>
+
+  <div class="foot fu d8">
+    <p>AdGuard DNS · No-log policy · GDPR compliant</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: LOG
+══════════════════════════════════════ -->
+<div class="page" id="page-log">
+
+  <div class="slbl fu d0">Live Activity</div>
+  <div id="terminal" class="fu d0">
+    <div id="tbar">
+      <div class="td" style="background:#ff5f57"></div>
+      <div class="td" style="background:#febc2e"></div>
+      <div class="td" style="background:#28c840"></div>
+      <span id="tbar-label">adaway · dns-filter · live</span>
+    </div>
+    <div id="lbox"></div>
+  </div>
+  <button class="btn btn-red" onclick="clrLog()">Clear Log</button>
+
+  <div class="slbl fu d2" style="margin-top:20px;">Recent Blocks</div>
+  <div class="grp fu d2" id="recent-list"></div>
+
+  <div class="foot fu d8">
+    <p>All DNS queries processed locally · No data leaves device</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB BAR
+══════════════════════════════════════ -->
+<nav id="tab-bar">
+  <div class="tab active" id="tab-home" onclick="switchTab('home')">
+    <div class="tab-icon">🛡️</div>
+    <div class="tab-lbl">Home</div>
+  </div>
+  <div class="tab" id="tab-sc" onclick="switchTab('sc')">
+    <div class="tab-icon">🔊</div>
+    <div class="tab-lbl">SoundCloud</div>
+  </div>
+  <div class="tab" id="tab-dns" onclick="switchTab('dns')">
+    <div class="tab-icon">🌐</div>
+    <div class="tab-lbl">DNS</div>
+  </div>
+  <div class="tab" id="tab-log" onclick="switchTab('log')">
+    <div class="tab-icon">📋</div>
+    <div class="tab-lbl">Log</div>
+  </div>
+</nav>
+
+<div id="toast"></div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+<script>
+// ── DOMAIN POOLS ──────────────────────────────────────────────────────────
+const POOL_BLOCK = [
+  'ad.doubleclick.net','googlesyndication.com','pagead2.googlesyndication.com',
+  'securepubads.g.doubleclick.net','googleads.g.doubleclick.net','adservice.google.com',
+  'ads.youtube.com','s.youtube.com','aax.amazon-adsystem.com','advertising.amazon.com',
+  'criteo.com','cas.criteo.com','match.adsrvr.org','trc.taboola.com','log.outbrain.com',
+  'fastlane.rubiconproject.com','delivery.openx.net','image2.pubmatic.com',
+  'z.moatads.com','a.teads.tv','ib.adnxs.com','x.bidswitch.net','track.adform.net',
+  'soma.smaato.net','config.inmobi.com','unityads.unity3d.com','api.vungle.com',
+  'live.chartboost.com','t.appsflyer.com','app.adjust.com','api.branch.io',
+  'control.kochava.com','api.mixpanel.com','api.amplitude.com','api.segment.io',
+  'logs.ironsrc.com','in.hotjar.com','rs.fullstory.com','r.logrocket.io',
+  'heapanalytics.com','trk.kissmetrics.com','data.flurry.com','bam.nr-data.net',
+  'ingest.sentry.io','browser-intake-datadoghq.com','n2.mouseflow.com',
+  'client.perimeterx.net','ads.pinterest.com','ads.tiktok.com','ads.twitter.com',
+  'ads1.msn.com','adroll.com','adnxs.com','admob.com','addthis.com',
+  'scorecardresearch.com','pixel.quantserve.com','popads.net','track.propellerads.com',
+];
+
+const POOL_SC = [
+  'ad.soundcloud.com','ads.soundcloud.com','promoted.soundcloud.com',
+  'api-promoted.soundcloud.com','smetrics.soundcloud.com',
+  'analytics.soundcloud.com','eventlogger.soundcloud.com',
+];
+
+const POOL_SC_ADJACENT = [
+  'moatads.com','z.moatads.com','scorecardresearch.com','pixel.quantserve.com',
+  'criteo.com','trc.taboola.com','data.flurry.com','api.amplitude.com',
+  'api.segment.io','googleads.g.doubleclick.net','adservice.google.com',
+];
+
+const POOL_ALLOW = [
+  'api.soundcloud.com','stream.soundcloud.com','cf-hls-media.sndcdn.com',
+  'i1.sndcdn.com','i2.sndcdn.com','apple.com','icloud.com',
+  'github.com','duckduckgo.com','wikipedia.org',
+];
+
+const SC_CATEGORIES = {
+  'ad.soundcloud.com':         { tag:'pmt', label:'Ads' },
+  'ads.soundcloud.com':        { tag:'blk', label:'Ads' },
+  'promoted.soundcloud.com':   { tag:'pmt', label:'Promoted' },
+  'api-promoted.soundcloud.com':{ tag:'pmt', label:'Promoted' },
+  'smetrics.soundcloud.com':   { tag:'ana', label:'Analytics' },
+  'analytics.soundcloud.com':  { tag:'ana', label:'Analytics' },
+  'eventlogger.soundcloud.com':{ tag:'trk', label:'Beacon' },
+  'moatads.com':               { tag:'trk', label:'Viewability' },
+  'z.moatads.com':             { tag:'trk', label:'Viewability' },
+  'scorecardresearch.com':     { tag:'ana', label:'Audience' },
+  'pixel.quantserve.com':      { tag:'trk', label:'Pixel' },
+  'criteo.com':                { tag:'blk', label:'Retargeting' },
+  'trc.taboola.com':           { tag:'blk', label:'Native' },
+  'data.flurry.com':           { tag:'ana', label:'Analytics' },
+  'api.amplitude.com':         { tag:'ana', label:'Analytics' },
+  'api.segment.io':            { tag:'ana', label:'Analytics' },
+  'googleads.g.doubleclick.net':{ tag:'blk', label:'Ads' },
+  'adservice.google.com':      { tag:'blk', label:'Ads' },
+  'pagead2.googlesyndication.com':{ tag:'blk', label:'Ads' },
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+const S = {
+  t0: Date.now(),
+  blocked: 0, allowed: 0,
+  sc_ads: 0, sc_trk: 0, sc_prm: 0, sc_anl: 0,
+  sc_total: 0,
+  dns_latency_samples: [],
+  wv_history: new Array(32).fill(0),   // waveform heights
+  feed_count: 0,
+  recent: [],
+};
+
+// ── UTILITIES ─────────────────────────────────────────────────────────────
+const pick  = a => a[Math.floor(Math.random() * a.length)];
+const rint  = (a, b) => a + Math.floor(Math.random() * (b - a));
+const pad2  = n => String(n).padStart(2, '0');
+const ts    = () => { const d = new Date(); return `${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`; };
+
+function fmtUp(ms) {
+  const s = Math.floor(ms / 1000);
+  if (s < 60) return s + 's';
+  const m = Math.floor(s / 60);
+  if (m < 60) return m + 'm ' + (s % 60) + 's';
+  return Math.floor(m / 60) + 'h ' + (m % 60) + 'm';
+}
+
+function animCount(el, to, dur) {
+  if (!el) return;
+  const from = parseInt(el.textContent.replace(/,/g, '')) || 0;
+  const diff = to - from, t0 = performance.now();
+  (function step(now) {
+    const p = Math.min((now - t0) / dur, 1);
+    const e = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(from + diff * e).toLocaleString();
+    if (p < 1) requestAnimationFrame(step);
+  })(t0);
+}
+
+// ── LOG ───────────────────────────────────────────────────────────────────
+const lbox = document.getElementById('lbox');
+let lc = 0;
+const MAX_LOG = 140;
+
+function appendLog(cls, pfx, html) {
+  if (lc >= MAX_LOG) lbox.removeChild(lbox.firstChild);
+  const s = document.createElement('span');
+  s.className = 'll';
+  s.innerHTML = `<span class="lt">[${ts()}]</span> <span class="${cls}">${pfx}</span> ${html}`;
+  lbox.appendChild(s);
+  lc++;
+  lbox.scrollTop = lbox.scrollHeight;
+}
+
+const lsys = m => appendLog('lsy', 'SYS', `<span class="lsy">${m}</span>`);
+const lblk = d => appendLog('lbl', 'BLOCK', `<span class="lbl">✕ ${d}</span>`);
+const lall = d => appendLog('lok', 'ALLOW', `<span class="lok">✓ ${d}</span>`);
+const linf = m => appendLog('lin', 'INFO', m);
+const lwrn = m => appendLog('lwn', 'WARN', `<span class="lwn">${m}</span>`);
+const lsc  = m => appendLog('lsc', 'SC',   `<span class="lsc">${m}</span>`);
+
+function clrLog() { lbox.innerHTML = ''; lc = 0; lsys('Log cleared.'); toast('Log cleared'); }
+
+// ── RECENT BLOCKS LIST ────────────────────────────────────────────────────
+const recentEl = document.getElementById('recent-list');
+function pushRecent(domain, type) {
+  S.recent.unshift({ domain, type, time: ts() });
+  if (S.recent.length > 12) S.recent.pop();
+  recentEl.innerHTML = S.recent.map(r => `
+    <div class="row">
+      <div class="ri" style="background:rgba(255,69,58,.08)">🚫</div>
+      <div class="rb"><div class="rt">${r.domain}</div><div class="rs">${r.type}</div></div>
+      <div class="rr"><span class="rv" style="font-size:11px">${r.time}</span></div>
+    </div>`).join('');
+}
+
+// ── WAVEFORM ──────────────────────────────────────────────────────────────
+const waveEl = document.getElementById('waveform');
+// Build bars
+for (let i = 0; i < 32; i++) {
+  const b = document.createElement('div');
+  b.className = 'wbar';
+  waveEl.appendChild(b);
+}
+const waveBars = waveEl.querySelectorAll('.wbar');
+
+function updateWave(blocked) {
+  S.wv_history.shift();
+  S.wv_history.push(blocked ? rint(55, 100) : rint(5, 25));
+  waveBars.forEach((b, i) => {
+    const h = S.wv_history[i];
+    b.style.height = h + '%';
+    b.className = 'wbar ' + (h > 40 ? 'blocked' : 'passing');
+  });
+}
+
+// ── SC FEED ───────────────────────────────────────────────────────────────
+const scFeed = document.getElementById('sc-feed');
+const scFeedCount = document.getElementById('sc-feed-count');
+const MAX_FEED = 30;
+
+function pushFeed(domain, cat) {
+  const c = SC_CATEGORIES[domain] || { tag: cat || 'blk', label: 'Block' };
+  S.feed_count++;
+  scFeedCount.textContent = S.feed_count;
+  const row = document.createElement('div');
+  row.className = 'sc-feed-row';
+  row.innerHTML = `
+    <span class="sc-feed-tag ${c.tag}">${c.label}</span>
+    <span class="sc-feed-domain">${domain}</span>
+    <span class="sc-feed-time">${ts()}</span>`;
+  scFeed.prepend(row);
+  if (scFeed.children.length > MAX_FEED) scFeed.removeChild(scFeed.lastChild);
+}
+
+// ── STATS UPDATE ──────────────────────────────────────────────────────────
+function updateAll() {
+  // Home
+  animCount(document.getElementById('h-blocked'), S.blocked, 300);
+  document.getElementById('h-uptime').textContent = fmtUp(Date.now() - S.t0);
+  const total = S.blocked + S.allowed;
+  const pct = total ? Math.round(S.blocked / total * 100) : 0;
+  document.getElementById('h-pct').textContent = pct + '%';
+  document.getElementById('h-fill').style.width = pct + '%';
+
+  // DNS page
+  animCount(document.getElementById('dns-blocked'), S.blocked, 300);
+  animCount(document.getElementById('dns-allowed'), S.allowed, 300);
+  document.getElementById('dns-pct').textContent = pct + '%';
+  document.getElementById('dns-fill').style.width = pct + '%';
+  if (S.dns_latency_samples.length) {
+    const avg = Math.round(S.dns_latency_samples.reduce((a,b) => a+b,0) / S.dns_latency_samples.length);
+    document.getElementById('dns-latency').textContent = avg;
+  }
+
+  // SC page
+  animCount(document.getElementById('sc-ads'), S.sc_ads, 300);
+  animCount(document.getElementById('sc-trk'), S.sc_trk, 300);
+  animCount(document.getElementById('sc-prm'), S.sc_prm, 300);
+  animCount(document.getElementById('sc-anl'), S.sc_anl, 300);
+  const scTotal = S.sc_ads + S.sc_trk + S.sc_prm + S.sc_anl;
+  const scPct = scTotal ? Math.min(Math.round(scTotal / (scTotal + S.allowed * 0.2) * 100), 97) : 0;
+  document.getElementById('sc-pct').textContent = scPct + '%';
+  document.getElementById('sc-fill').style.width = scPct + '%';
+  const bpm = scTotal > 0 ? Math.round(scTotal / Math.max((Date.now()-S.t0)/60000, 0.1)) : 0;
+  document.getElementById('sc-viz-rate').textContent = `— ${bpm} blocks/min`;
+}
+
+// ── SIMULATION ────────────────────────────────────────────────────────────
+const INFO_POOL = [
+  'DoH query resolved in %ms ms',
+  'Cache hit ratio: %p%',
+  'DNSSEC validation passed',
+  'TLS 1.3 handshake in %ms ms',
+  'IPv6 fallback resolved',
+  'Filter cache refreshed',
+];
+const WARN_POOL = [
+  'Suspicious redirect chain intercepted',
+  'High-frequency beacon detected',
+  'Tracker fingerprint attempt blocked',
+  'DNS-over-UDP attempt rejected',
+];
+
+function doBlock() {
+  const d = pick(POOL_BLOCK);
+  S.blocked++;
+  lblk(d);
+  pushRecent(d, 'Ad / Tracker');
+  const lat = rint(18, 80);
+  S.dns_latency_samples.push(lat);
+  if (S.dns_latency_samples.length > 40) S.dns_latency_samples.shift();
+  updateWave(true);
+  updateAll();
+}
+
+function doAllow() {
+  const d = pick(POOL_ALLOW);
+  S.allowed++;
+  lall(d);
+  const lat = rint(12, 50);
+  S.dns_latency_samples.push(lat);
+  if (S.dns_latency_samples.length > 40) S.dns_latency_samples.shift();
+  updateWave(false);
+  updateAll();
+}
+
+function doSCBlock() {
+  // pick pure SC or adjacent
+  const pool = Math.random() < 0.6 ? POOL_SC : POOL_SC_ADJACENT;
+  const d = pick(pool);
+  const cat = SC_CATEGORIES[d];
+
+  // classify
+  if (cat) {
+    if (cat.tag === 'pmt') S.sc_prm++;
+    else if (cat.tag === 'ana') S.sc_anl++;
+    else if (cat.tag === 'trk') S.sc_trk++;
+    else S.sc_ads++;
+  } else {
+    S.sc_ads++;
+  }
+
+  S.blocked++;
+  lsc(`✕ ${d}`);
+  pushFeed(d);
+  pushRecent(d, 'SoundCloud');
+  document.getElementById('sc-now-blocking').innerHTML =
+    `Last block: <span class="domain">${d}</span>`;
+  updateWave(true);
+  updateAll();
+}
+
+function doEvent() {
+  const r = Math.random();
+  if      (r < 0.55) doBlock();
+  else if (r < 0.70) doSCBlock();
+  else if (r < 0.84) doAllow();
+  else if (r < 0.93) lwrn(pick(WARN_POOL));
+  else               linf(pick(INFO_POOL).replace('%ms', rint(18,75)).replace('%p', rint(72,94)));
+}
+
+// ── TOGGLES ───────────────────────────────────────────────────────────────
+function tog(el, label) {
+  if (el.checked) { linf(`${label} enabled`); toast(label + ' on'); }
+  else            { lwrn(`${label} disabled`); toast(label + ' off'); }
+}
+
+function scTog(el, label) {
+  if (el.checked) { lsc(`${label} blocking enabled`);  toast('SC: ' + label + ' on'); }
+  else            { lwrn(`SC: ${label} blocking off`);  toast('SC: ' + label + ' off'); }
+}
+
+function resetSC() {
+  S.sc_ads = S.sc_trk = S.sc_prm = S.sc_anl = S.feed_count = 0;
+  scFeed.innerHTML = '';
+  scFeedCount.textContent = '0';
+  document.getElementById('sc-now-blocking').textContent = 'Monitoring…';
+  S.wv_history.fill(0);
+  updateAll();
+  toast('SoundCloud stats reset');
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────
+let ttimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(ttimer);
+  ttimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// ── TAB SWITCHING ─────────────────────────────────────────────────────────
+const TAB_META = {
+  home: { title: 'AdAway',       badge: 'ACTIVE', badgeCls: '',       pageSuffix: 'home' },
+  sc:   { title: 'SoundCloud',   badge: 'SC',     badgeCls: 'sc',     pageSuffix: 'sc'   },
+  dns:  { title: 'DNS Config',   badge: 'DoH',    badgeCls: 'blue',   pageSuffix: 'dns'  },
+  log:  { title: 'Activity Log', badge: 'LIVE',   badgeCls: 'yellow', pageSuffix: 'log'  },
+};
+
+function switchTab(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.getElementById('tab-'  + id).classList.add('active');
+  const m = TAB_META[id];
+  document.getElementById('nav-title').textContent = m.title;
+  const nb = document.getElementById('nav-badge');
+  nb.textContent = m.badge;
+  nb.className = m.badgeCls;
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+(function init() {
+  lsys('AdAway v2.0 initializing…');
+  lsys('Profile: com.adaway.profile');
+  lsys('DoH → dns.adguard-dns.com');
+  lsys('IPv4: 94.140.14.14 / 94.140.15.15');
+  lsys('IPv6: 2a10:50c0::ad1:ff / 2a10:50c0::ad2:ff');
+  lsys('DNSSEC: ON · TLS 1.3');
+  lsys('On-demand rules: 2 loaded');
+  linf('508 block rules active');
+  lsc('SoundCloud suite: 18 domains monitored');
+  linf('Filter engine ready');
+
+  // Animate progress bars
+  setTimeout(() => {
+    document.getElementById('h-fill').style.width = '78%';
+    document.getElementById('h-pct').textContent = '78%';
+    document.getElementById('dns-fill').style.width = '78%';
+    document.getElementById('dns-pct').textContent = '78%';
+  }, 600);
+
+  // Initial burst of events
+  setTimeout(() => {
+    for (let i = 0; i < 4; i++) setTimeout(doBlock, i * 260);
+    setTimeout(doSCBlock, 1100);
+    setTimeout(doSCBlock, 1600);
+  }, 900);
+
+  // Ongoing simulation
+  setInterval(doEvent, 2000 + Math.random() * 2200);
+
+  // SC-specific burst every ~12s
+  setInterval(() => {
+    if (Math.random() < 0.65) doSCBlock();
+  }, 12000 + Math.random() * 6000);
+
+  // Stats tick
+  setInterval(updateAll, 1000);
+
+  // Occasional info
+  setInterval(() => {
+    if (Math.random() < 0.4) linf(`DoH resolved in ${rint(18, 72)}ms`);
+  }, 9000 + Math.random() * 8000);
+})();
+</script>
+</body>
+</html>
